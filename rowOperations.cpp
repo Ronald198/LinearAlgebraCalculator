@@ -22,7 +22,7 @@ void MultiplyRowByScalar(double *row, double scalar, int nrOfColumns)
     }
 }
 
-///minuend - subtrahend = difference
+/// minuend - subtrahend = difference
 void SubstractRowFromAnother(double *minuendRow, double *subtrahendRow, double multiplier,int nrOfColumns)
 {
     for (int i = 0; i < nrOfColumns; i++)

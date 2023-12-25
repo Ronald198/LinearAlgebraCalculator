@@ -90,3 +90,50 @@ void ref(double **matrix, int nrOfRows, int nrOfColumns)
         }
     }
 }
+
+void rref(double **matrix, int nrOfRows, int nrOfColumns)
+{
+    for (int i = nrOfRows - 1; i >= 0; i--)
+    {
+        int posY;
+        bool foundLeadingVar = false;
+        double leadingVar;
+
+        for (int j = 0; j < nrOfColumns; j++)
+        {
+            if (matrix[i][j] != 0)
+            {
+                foundLeadingVar = true;
+                leadingVar = matrix[i][j];
+                posY = j;
+                break;
+            }
+        }
+
+        if (foundLeadingVar) // else there is a row full of zeros if no var is found
+        {
+            if (leadingVar != 1)
+            {
+                double multiplier = 1 / leadingVar;
+                MultiplyRowByScalar(matrix[i], multiplier, nrOfColumns);
+                std::cout << refSteps++ << ". Multiply R" << i + 1 << " with " << multiplier << ".\n";
+            }
+
+            for (int j = i - 1; j >= 0; j--)
+            {
+                double element = matrix[j][posY];
+
+                SubstractRowFromAnother(&matrix[j][0], &matrix[i][0], element, nrOfColumns);
+
+                if (element == 1)
+                {
+                    std::cout << refSteps++ << ". Subtract R" << i + 1 << " from R" << j + 1 << ".\n";
+                }
+                else
+                {
+                    std::cout << refSteps++ << ". Subtract " << element << " * R" << i + 1 << " from R" << j + 1 << ".\n";
+                }   
+            }
+        }
+    }
+}

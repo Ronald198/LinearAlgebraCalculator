@@ -84,6 +84,8 @@ void PrintMatrix(double **matrix, int nrOfRows, int nrOfColumns)
 
         std::cout << std::endl;
     }
+
+    std::cout << std::endl;
 }
 
 int main()
@@ -130,13 +132,15 @@ int main()
 
     ref(matrix, nrOfRows, nrOfColumns);
 
-    if (toRREF)
-    {
-        // TODO TO RREF;
-    }
-
     std::cout << "The REF is: \n";
     PrintMatrix(matrix, nrOfRows, nrOfColumns);
+
+    if (toRREF)
+    {
+        rref(matrix, nrOfRows, nrOfColumns);
+        std::cout << "The RREF is: \n";
+        PrintMatrix(matrix, nrOfRows, nrOfColumns);
+    }
     
     return 0;
 }
