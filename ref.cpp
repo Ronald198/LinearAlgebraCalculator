@@ -1,0 +1,92 @@
+#include <iostream>
+#include "rowOperations.hh"
+
+int refSteps = 1;
+
+void MakeLeadingVaribalesOnes(double **matrix, int nrOfRows, int nrOfColumns)
+{
+    for (int i = 0; i < nrOfRows; i++)  //make all leading variables ones
+    {
+        bool foundLeadingVar = false;
+        double leadingVar;
+
+        for (int j = 0; j < nrOfColumns; j++)
+        {
+            if (!foundLeadingVar)
+            {
+                if (matrix[i][j] != 0)
+                {
+                    foundLeadingVar = true;
+                    leadingVar = 1 / matrix[i][j];
+                }
+            }
+        }
+
+        if (foundLeadingVar && leadingVar != 1)
+        {
+            MultiplyRowByScalar(matrix[i], leadingVar, nrOfColumns);
+            std::cout << refSteps++ << ". Multiply R" << i + 1 << " with " << leadingVar << ".\n";
+        }
+    }
+}
+
+void ref(double **matrix, int nrOfRows, int nrOfColumns)
+{
+    for (int i = 0; i < nrOfRows; i++)
+    {
+        int pivotX = i, pivotY = i;
+        double pivotElement = 0;
+        bool foundPivot = true;
+
+        while (pivotElement == 0)
+        {
+            if (pivotX != nrOfRows - 1) // search for the first non-zero element
+            {
+                pivotElement = matrix[pivotX++][pivotY];
+
+                if (pivotElement != 0)
+                {
+                    pivotX--;
+                    break;
+                }
+            }
+            else if (pivotY != nrOfColumns - 1)
+            {
+                pivotY++; // switch to next column
+                pivotX = i;
+            }
+            else // implies row full of zeros
+            {
+                foundPivot = false;
+                break;
+            }
+        }
+
+        if (pivotX != i && foundPivot)
+        {
+            SwapRows(&matrix[i][0], &matrix[pivotX][0], nrOfColumns);
+            std::cout << refSteps++ << ". Swap R" << i + 1 << " with R" << pivotX + 1 << ".\n";
+            pivotX = i;
+        }
+
+        for (int j = pivotX + 1; j < nrOfRows; j++)
+        {
+            double element = matrix[j][pivotY];
+            double multiplier = (double)element / pivotElement;
+
+            if (multiplier != 0)
+            {
+                SubstractRowFromAnother(&matrix[j][0], &matrix[pivotX][0], multiplier, nrOfColumns);
+
+                if (multiplier == 1)
+                {
+                    std::cout << refSteps++ << ". Subtract R" << pivotX + 1 << " from R" << j + 1 << ".\n";
+                }
+                else
+                {
+                    std::cout << refSteps++ << ". Subtract " << multiplier << " * R" << pivotX + 1 << " from R" << j + 1 << ".\n";
+                }   
+            }
+        }
+    }
+}
