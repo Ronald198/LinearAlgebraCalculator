@@ -1,11 +1,14 @@
 #include <iostream>
 #include <vector>
+#include <map>
 #include "ref.hh"
+
 using std::cout;
 using std::cin;
 using std::endl;
 using std::string;
 using std::vector;
+using std::map;
 /*
 3
 3
@@ -79,7 +82,7 @@ using std::vector;
 4
 */
 
-void PrintMatrix(double **matrix, int nrOfRows, int nrOfColumns)
+void PrintMatrix(vector<vector<double>> matrix, int nrOfRows, int nrOfColumns)
 {
     for (int i = 0; i < nrOfRows; i++)
     {
@@ -97,6 +100,7 @@ void PrintMatrix(double **matrix, int nrOfRows, int nrOfColumns)
 int main()
 {
     int nrOfRows, nrOfColumns;
+    map<string, vector<vector<double>>> matrices;
 
     cout << "Enter the number of rows: ";
     cin >> nrOfRows;
@@ -110,13 +114,7 @@ int main()
     cout << "Calculate to RREF (1) or to REF (2): ";
     cin >> ans;
 
-    std::vector<vector<int>> matrixV;
-    double **matrix = new double*[nrOfRows];
-
-    for (int i = 0; i < nrOfRows; i++)
-    {
-        matrix[i] = new double[nrOfColumns];
-    }
+    vector<vector<double>> matrix(nrOfRows, vector<double>(nrOfColumns));
 
     switch (ans)
     {
