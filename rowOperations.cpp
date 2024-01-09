@@ -1,4 +1,7 @@
-void SwapRows(double *originRow, double *destinationRow, int nrOfColumns)
+#include <vector>
+using std::vector;
+
+void SwapRows(vector<double> &originRow, vector<double> &destinationRow, int nrOfColumns)
 {
     int temp[nrOfColumns];
 
@@ -14,7 +17,7 @@ void SwapRows(double *originRow, double *destinationRow, int nrOfColumns)
     }
 }
 
-void MultiplyRowByScalar(double *row, double scalar, int nrOfColumns)
+void MultiplyRowByScalar(vector<double> &row, double scalar, int nrOfColumns)
 {
     for (int i = 0; i < nrOfColumns; i++)
     {
@@ -23,7 +26,7 @@ void MultiplyRowByScalar(double *row, double scalar, int nrOfColumns)
 }
 
 /// minuend - subtrahend = difference
-void SubstractRowFromAnother(double *minuendRow, double *subtrahendRow, double multiplier,int nrOfColumns)
+void SubstractRowFromAnother(vector<double> &minuendRow, vector<double> &subtrahendRow, double multiplier,int nrOfColumns)
 {
     for (int i = 0; i < nrOfColumns; i++)
     {

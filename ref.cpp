@@ -1,9 +1,13 @@
 #include <iostream>
+#include <vector>
 #include "rowOperations.hh"
+
+using std::cout;
+using std::vector;
 
 int refSteps = 1;
 
-void MakeLeadingVaribalesOnes(double **matrix, int nrOfRows, int nrOfColumns)
+void MakeLeadingVaribalesOnes(vector<vector<double>> &matrix, int nrOfRows, int nrOfColumns)
 {
     for (int i = 0; i < nrOfRows; i++)  //make all leading variables ones
     {
@@ -25,12 +29,12 @@ void MakeLeadingVaribalesOnes(double **matrix, int nrOfRows, int nrOfColumns)
         if (foundLeadingVar && leadingVar != 1)
         {
             MultiplyRowByScalar(matrix[i], leadingVar, nrOfColumns);
-            std::cout << refSteps++ << ". Multiply R" << i + 1 << " with " << leadingVar << ".\n";
+            cout << refSteps++ << ". Multiply R" << i + 1 << " with " << leadingVar << ".\n";
         }
     }
 }
 
-void ref(double **matrix, int nrOfRows, int nrOfColumns)
+void ref(vector<vector<double>> &matrix, int nrOfRows, int nrOfColumns)
 {
     for (int i = 0; i < nrOfRows; i++)
     {
@@ -64,7 +68,7 @@ void ref(double **matrix, int nrOfRows, int nrOfColumns)
 
         if (pivotX != i && foundPivot)
         {
-            SwapRows(&matrix[i][0], &matrix[pivotX][0], nrOfColumns);
+            SwapRows(matrix[i], matrix[pivotX], nrOfColumns);
             std::cout << refSteps++ << ". Swap R" << i + 1 << " with R" << pivotX + 1 << ".\n";
             pivotX = i;
         }
@@ -76,7 +80,7 @@ void ref(double **matrix, int nrOfRows, int nrOfColumns)
 
             if (multiplier != 0)
             {
-                SubstractRowFromAnother(&matrix[j][0], &matrix[pivotX][0], multiplier, nrOfColumns);
+                SubstractRowFromAnother(matrix[j], matrix[pivotX], multiplier, nrOfColumns);
 
                 if (multiplier == 1)
                 {
@@ -91,7 +95,7 @@ void ref(double **matrix, int nrOfRows, int nrOfColumns)
     }
 }
 
-void rref(double **matrix, int nrOfRows, int nrOfColumns)
+void rref(vector<vector<double>> &matrix, int nrOfRows, int nrOfColumns)
 {
     for (int i = nrOfRows - 1; i >= 0; i--)
     {
@@ -116,14 +120,14 @@ void rref(double **matrix, int nrOfRows, int nrOfColumns)
             {
                 double multiplier = 1 / leadingVar;
                 MultiplyRowByScalar(matrix[i], multiplier, nrOfColumns);
-                std::cout << refSteps++ << ". Multiply R" << i + 1 << " with " << multiplier << ".\n";
+                cout << refSteps++ << ". Multiply R" << i + 1 << " with " << multiplier << ".\n";
             }
 
             for (int j = i - 1; j >= 0; j--)
             {
                 double element = matrix[j][posY];
 
-                SubstractRowFromAnother(&matrix[j][0], &matrix[i][0], element, nrOfColumns);
+                SubstractRowFromAnother(matrix[j], matrix[i], element, nrOfColumns);
 
                 if (element == 1)
                 {
