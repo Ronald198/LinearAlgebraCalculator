@@ -2,6 +2,7 @@
 #include <vector>
 #include <map>
 #include "ref.hh"
+#include "promptAnalysis.hh"
 
 using std::cout;
 using std::cin;
@@ -99,32 +100,23 @@ void PrintMatrix(vector<vector<double>> matrix, int nrOfRows, int nrOfColumns)
 
 int main()
 {
-    int nrOfRows, nrOfColumns;
-    map<string, vector<vector<double>>> matrices;
+    string prompt;
 
-    cout << "Enter the number of rows: ";
-    cin >> nrOfRows;
-
-    cout << "Enter the number of columns: ";
-    cin >> nrOfColumns; //TODO CASES WHEN MATRIX IS 1xn OR mx1
-
-    int ans;
-    bool toRREF;
-
-    cout << "Calculate to RREF (1) or to REF (2): ";
-    cin >> ans;
-
-    vector<vector<double>> matrix(nrOfRows, vector<double>(nrOfColumns));
-
-    switch (ans)
+    while (true)
     {
-    case 1:
-        toRREF = true;
-        break;
-    case 2:
-        toRREF = false;
-        break;
+        cout << ">>> ";
+        std::getline(cin, prompt);
+
+        if (prompt == "quit")
+        {
+            return 0;
+        }
+
+        AnalysePrompt(prompt);
     }
+
+    /*
+    vector<vector<double>> matrix(nrOfRows, vector<double>(nrOfColumns));
 
     for (int i = 0; i < nrOfRows; i++)
     {
@@ -146,6 +138,6 @@ int main()
         cout << "The RREF is: \n";
         PrintMatrix(matrix, nrOfRows, nrOfColumns);
     }
-    
+    */
     return 0;
 }
