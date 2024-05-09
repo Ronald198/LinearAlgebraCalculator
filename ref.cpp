@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include "rowOperations.hh"
+#include "HeaderFiles/rowOperations.hh"
 
 using std::cout;
 using std::vector;
@@ -34,8 +34,10 @@ void MakeLeadingVaribalesOnes(vector<vector<double>> &matrix, int nrOfRows, int 
     }
 }
 
-void ref(vector<vector<double>> &matrix, int nrOfRows, int nrOfColumns)
+vector<vector<double>> _ref(vector<vector<double>> matrix, int nrOfRows, int nrOfColumns)
 {
+    refSteps = 1;
+    
     for (int i = 0; i < nrOfRows; i++)
     {
         int pivotX = i, pivotY = i;
@@ -93,10 +95,14 @@ void ref(vector<vector<double>> &matrix, int nrOfRows, int nrOfColumns)
             }
         }
     }
+
+    return matrix;
 }
 
-void rref(vector<vector<double>> &matrix, int nrOfRows, int nrOfColumns)
+vector<vector<double>> _rref(vector<vector<double>> matrix, int nrOfRows, int nrOfColumns)
 {
+    matrix = _ref(matrix, nrOfRows, nrOfColumns);
+
     for (int i = nrOfRows - 1; i >= 0; i--)
     {
         int posY;
@@ -140,4 +146,6 @@ void rref(vector<vector<double>> &matrix, int nrOfRows, int nrOfColumns)
             }
         }
     }
+
+    return matrix;
 }

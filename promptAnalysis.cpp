@@ -1,7 +1,11 @@
 #include <iostream>
 #include <vector>
 #include <map>
-#include "ref.hh"
+#include <string>
+#include <sstream>
+#include <cctype> // for isspace
+#include "HeaderFiles/ref.hh"
+#include "HeaderFiles/matrix.hh"
 
 using std::string;
 using std::vector;
@@ -9,102 +13,167 @@ using std::map;
 using std::cout;
 using std::endl;
 
-map<string, vector<vector<double>>> matrices;
+map<string, Matrix> matrices;
 map<string, double> scalars;
 
-void AnalysePrompt(string prompt)
+void AnalysePrompt(const string prompt)
 {
-    int indexStart = prompt.find('(');
-    int indexEnd = prompt.find(')');
-    prompt.replace(prompt.begin(), prompt.end(), " ", ""); //remove spaces
+    size_t equalPos = prompt.find('=');
 
-    if (indexStart == string::npos && indexEnd != string::npos)
+    if (equalPos == string::npos) // no '=' in the string
     {
-        cout << ">>> Unknown function. Do you miss '('?" << endl;
-    }
-    else if (indexStart != string::npos && indexEnd == string::npos)
-    {
-        cout << ">>> Unknown function. Do you miss ')'?" << endl;
-    }
-    else //todo print or declare matrix
-    {
-        if (prompt.find("*") != string::npos)
+        size_t paranethesisOpeningPos = prompt.find('(');
+
+        if (paranethesisOpeningPos == string::npos) // no '(' in the string then print
         {
-            if (prompt.find("=") == string::npos)
+            if (matrices.find(prompt) == matrices.end())
             {
-                // misses =
+                if (prompt != "")
+                    cout << "Undefined operation!\n";
+            }
+            else
+            {
+                Matrix toOperate = matrices[prompt];
+
+                toOperate.printMatrix();
             }
         }
-        else if (prompt.find("+") != string::npos)
+        else // function check
         {
-            if (prompt.find("=") == string::npos)
+            size_t paranethesisClosingPos = prompt.find(')');
+
+            if (paranethesisClosingPos == string::npos) // no ')' in the string then print
             {
-                // misses =
+                cout << "Invalid function call! Are you missing any ')'?\n";
+            }
+            else
+            {
+                string varName;
+                size_t detPos = prompt.find("det(");
+
+                if (detPos != string::npos)
+                {
+                    varName = prompt.substr(4, prompt.length() - 5);
+
+                    if (matrices.find(varName) == matrices.end())
+                    {
+                       cout << "'" << varName << "' is undefined!\n";
+                    }
+                    else
+                    {
+                        Matrix toOperate = matrices[varName];
+
+                        cout << "\t" << toOperate.determinant() << endl;
+                    }
+
+                    return;
+                }
+
+                size_t rrefPos = prompt.find("rref(");
+
+                if (rrefPos != string::npos)
+                {
+                    varName = prompt.substr(5, prompt.length() - 6);
+
+                    if (matrices.find(varName) == matrices.end())
+                    {
+                       cout << "'" << varName << "' is undefined!\n";
+                    }
+                    else
+                    {
+                        Matrix toOperate = matrices[varName];
+                        toOperate.rref();
+                    }
+
+                    return;
+                }
+
+                size_t refPos = prompt.find("ref(");
+
+                if (refPos != string::npos)
+                {
+                    varName = prompt.substr(4, prompt.length() - 5);
+
+                    if (matrices.find(varName) == matrices.end())
+                    {
+                       cout << "'" << varName << "' is undefined!\n";
+                    }
+                    else
+                    {
+                        Matrix toOperate = matrices[varName];
+                        toOperate.ref();
+                    }
+
+                    return;
+                }
+                
+                size_t diagPos = prompt.find("diag(");
             }
         }
-        else if (prompt.find("-") != string::npos)
+    }
+    else
+    {
+        string varName;
+        vector<vector<double>> result;
+        std::stringstream ss(prompt);
+        int rows = 0;
+        int cols = 0;
+        int colsCheck = 0;
+
+        char c;
+        while (ss >> c)
         {
-            if (prompt.find("=") == string::npos)
+            if (c == '[')
             {
-                // misses =
+                vector<double> row;
+                double num;
+
+                while (ss >> c)
+                {
+                    if (isdigit(c) || c == '-')
+                    {
+                        ss.putback(c);
+                        if (ss >> num) {
+                            row.push_back(num);
+
+                            if (rows == 0)
+                            {
+                                cols++;
+                                colsCheck++;
+                            }
+                            else
+                            {
+                                colsCheck++;
+                            }
+                        }
+                    }
+                    else if (c == ']')
+                    {
+                        break;
+                    }
+                }
+
+                if (colsCheck != cols)
+                {
+                    cout << "Column size is inconsistent! Check the input!\n";
+                    return;
+                }
+                
+                result.push_back(row);
+                rows++;
+                colsCheck = 0;
             }
         }
-        else if (prompt.find("=") != string::npos)
-        {
-            int nrOfRows, nrOfColumns;
 
-            vector<vector<double>> matrix(nrOfRows, vector<double>(nrOfColumns));
-        }
-        
-        return;
-    }    
+        varName = prompt.substr(0, equalPos);
+        // varName.erase(varName.find_last_not_of(" \n\r\t") + 1); // Trim whitespace from the name
 
-    string variableName = "";
+        Matrix newMatrix = Matrix();
+        newMatrix.matrix = result;
+        newMatrix.rowsNr = rows;
+        newMatrix.colsNr = cols;
+        newMatrix.printMatrix();
 
-    for (int i = indexStart + 1; i < indexEnd; i++)
-    {
-        variableName += prompt[i];
-    }
-
-    std::cout << variableName;
-    map<string, vector<vector<double>>> tempMatrices;
-    map<string ,double> tempScalars;
-
-    // >>> diag = inv(P) * A * P
-    // order is function, *, *
-    // general order is functions saved in tempMatrices and scalars. //need to determine order of variables (maybe save in a map string tuple idk)  
-
-    if (prompt.find("rref") != string::npos)
-    {
-        // ref(variableName);
-        // rref(variableName);
-    }
-    else if (prompt.find("ref") != string::npos)
-    {
-        // ref(variableName);
-    }
-    else if (prompt.find("det") != string::npos)
-    {
-        
-    }
-    else if (prompt.find("inv") != string::npos)
-    {
-        
-    }
-    else if (prompt.find("diag") != string::npos)
-    {
-        
-    }
-    else if (prompt.find("+") != string::npos)
-    {
-        
-    }
-    else if (prompt.find("-") != string::npos)
-    {
-        
-    }
-    else if (prompt.find("*") != string::npos)
-    {
-        
+        matrices.insert({varName, newMatrix});
     }
 }
