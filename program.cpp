@@ -3,6 +3,7 @@
 #include <iomanip>
 #include <algorithm> // For std::remove_if
 #include "HeaderFiles/promptAnalysis.hh"
+#include<string> // For std::getline in windows machines
 
 using std::cout;
 using std::cin;

@@ -63,7 +63,14 @@ void AnalysePrompt(const string prompt)
                     {
                         Matrix toOperate = matrices[varName];
 
-                        cout << "\t" << toOperate.determinant() << endl;
+                        if (toOperate.rowsNr == toOperate.colsNr)
+                        {
+                            cout << "\t" << toOperate.determinant() << endl;
+                        }
+                        else
+                        {
+                            cout << "Determinant can't be found! This matrix is non-square!" << endl; 
+                        }
                     }
 
                     return;
@@ -166,14 +173,24 @@ void AnalysePrompt(const string prompt)
         }
 
         varName = prompt.substr(0, equalPos);
-        // varName.erase(varName.find_last_not_of(" \n\r\t") + 1); // Trim whitespace from the name
 
-        Matrix newMatrix = Matrix();
-        newMatrix.matrix = result;
-        newMatrix.rowsNr = rows;
-        newMatrix.colsNr = cols;
-        newMatrix.printMatrix();
+        if (matrices.find(varName) == matrices.end()) // if variable doesnt exist
+        {
+            // varName.erase(varName.find_last_not_of(" \n\r\t") + 1); // Trim whitespace from the name
+            Matrix newMatrix = Matrix();
+            newMatrix.matrix = result;
+            newMatrix.rowsNr = rows;
+            newMatrix.colsNr = cols;
+            newMatrix.printMatrix();
 
-        matrices.insert({varName, newMatrix});
+            matrices.insert({varName, newMatrix});
+        }
+        else // if it exists, override it
+        {
+            matrices[varName].matrix = result;
+            matrices[varName].rowsNr = rows;
+            matrices[varName].colsNr = cols;
+            matrices[varName].printMatrix();
+        }
     }
 }

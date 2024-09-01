@@ -25,12 +25,7 @@ vector<vector<double>> Matrix::rref()
 
 double Matrix::determinant()
 {
-    if (rowsNr == colsNr)
-    {
-        return _determinant(matrix, rowsNr);
-    }
-
-    return 0;
+    return _determinant(matrix, rowsNr);
 }
 
 void Matrix::printMatrix()
@@ -39,7 +34,7 @@ void Matrix::printMatrix()
     {
         for (int j = 0; j < colsNr; j++)
         {
-            cout << matrix[i][j] << "\t";
+            cout << matrix[i][j] << "  \t";
         }
 
         cout << endl;
@@ -52,7 +47,7 @@ void Matrix::printRef(vector<vector<double>> rrefMatrix)
     {
         for (int j = 0; j < colsNr; j++)
         {
-            cout << rrefMatrix[i][j] << "\t";
+            cout << rrefMatrix[i][j] << "  \t";
         }
 
         cout << endl;
